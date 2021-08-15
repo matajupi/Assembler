@@ -3,4 +3,4 @@ project(Assembler)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Assembler main.cpp)
+add_executable(Assembler main.cpp Assembler.cpp Assembler.h Instruction.cpp Instruction.h)

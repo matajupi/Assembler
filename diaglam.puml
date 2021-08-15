@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Lexer
+{
+    +Token[] Tokenize(string source)
+}
+
+class Token
+{
+}
+
+class Parser
+{
+}
+
+class Code
+{
+}
+
+class Assembler
+{
+}
+
+Assembler o--> Lexer
+Assembler o--> Parser
+Assembler o--> Code
+
+@enduml

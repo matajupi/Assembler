@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
     }
     for (const auto& line : code)
         output_file << line << std::endl;
+    output_file.close();
 
     return 0;
 }

@@ -18,6 +18,7 @@ private:
     static std::regex A_COMMAND_PATTERN();
     static std::regex C_COMMAND_PATTERN();
     static std::regex L_COMMAND_PATTERN();
+    static std::regex COMMENT_PATTERN();
     std::vector<std::string> source;
 public:
     explicit Parser(std::vector<std::string>&);

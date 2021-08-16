@@ -35,6 +35,10 @@ bool Parser::parse(std::vector<Instruction> &instructions, std::vector<AssembleE
             jump = match[3].str();
             type = InstructionType::C_COMMAND;
         }
+        else if (std::regex_match(line, match, COMMENT_PATTERN()))
+        {
+            continue;
+        }
         else
         {
             auto error = AssembleError("Invalid syntax.", i + 1);
@@ -48,14 +52,22 @@ bool Parser::parse(std::vector<Instruction> &instructions, std::vector<AssembleE
     return errors.empty();
 }
 
-std::regex Parser::A_COMMAND_PATTERN() {
+std::regex Parser::A_COMMAND_PATTERN()
+{
     return std::regex(R"(@([0-9]+|[a-zA-Z_:\.\$][0-9a-zA-Z_:\.\$]*))");
 }
 
-std::regex Parser::C_COMMAND_PATTERN() {
+std::regex Parser::C_COMMAND_PATTERN()
+{
     return std::regex(R"((?:(A?M?D?)=)?([^;]+)(?:;(.+))?)");
 }
 
-std::regex Parser::L_COMMAND_PATTERN() {
+std::regex Parser::L_COMMAND_PATTERN()
+{
     return std::regex(R"(\([a-zA-Z_:\.\$][0-9a-zA-Z_:\.\$]*\))");
+}
+
+std::regex Parser::COMMENT_PATTERN()
+{
+    return std::regex("//.*");
 }

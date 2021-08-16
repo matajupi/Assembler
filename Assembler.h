@@ -8,14 +8,17 @@
 
 #include <string>
 #include <vector>
+#include "Parser.h"
+#include "CodeGenerator.h"
 
 
 class Assembler {
 private:
-    const std::vector<std::string> source;
+    std::vector<std::string> source;
+    static bool create_symbol_table(std::map<std::string, int>&, std::vector<Instruction>&, std::vector<AssembleError>&);
 public:
     explicit Assembler(std::vector<std::string>&);
-    void assemble(std::vector<std::string>&);
+    bool assemble(std::vector<std::string>&, std::vector<AssembleError>&);
 };
 
 

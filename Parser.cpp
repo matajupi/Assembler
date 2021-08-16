@@ -28,16 +28,16 @@ bool Parser::parse(std::vector<Instruction> &instructions, std::vector<AssembleE
             symbol = match[1].str();
             type = InstructionType::L_COMMAND;
         }
+        else if (std::regex_match(line, match, COMMENT_PATTERN()))
+        {
+            continue;
+        }
         else if (std::regex_match(line, match, C_COMMAND_PATTERN()))
         {
             dest = match[1].str();
             comp = match[2].str();
             jump = match[3].str();
             type = InstructionType::C_COMMAND;
-        }
-        else if (std::regex_match(line, match, COMMENT_PATTERN()))
-        {
-            continue;
         }
         else
         {

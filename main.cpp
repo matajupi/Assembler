@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     catch (std::exception &ex)
     {
         std::cerr << "Internal assembler error: " << ex.what() << std::endl;
-        std::cerr << "Please submit an issue to the following site with a full bug report." << std::endl;
+        std::cerr << "Please submit an issue to the following site with a full bug report and assembly code." << std::endl;
         std::cerr << "https://github.com/matajupi/HackAssembler" << std::endl;
         is_succeed = false;
     }

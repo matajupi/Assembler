@@ -1,22 +1,17 @@
 //
-// Created by Kosuke Futamata on 16/08/2021.
+// Created by Kosuke Futamata on 21/08/2021.
 //
 
-#ifndef ASSEMBLER_CODEGENERATOR_H
-#define ASSEMBLER_CODEGENERATOR_H
-
-
 #include <vector>
-#include <string>
 #include <map>
+#include <sstream>
+#include <bitset>
+#include <iostream>
 #include "Instruction.h"
-#include "AssembleError.h"
 
 
-class CodeGenerator {
-private:
-    std::vector<Instruction> instructions;
-    std::map<std::string, int> symbol_table;
+class CodeGenerator
+{
     const std::map<std::string, std::string> comp_table
     {
         { "0", "0101010"},
@@ -70,10 +65,78 @@ private:
         { "JLE", "110" },
         { "JMP", "111" }
     };
+    std::vector<Instruction*> *instructions;
+    std::map<std::string, int> *symbol_table;
 public:
-    explicit CodeGenerator(std::vector<Instruction>&, std::map<std::string, int>&);
-    bool generate(std::vector<std::string>&, std::vector<AssembleError>&);
+    explicit CodeGenerator(std::vector<Instruction*> *instructions, std::map<std::string, int> *symbol_table)
+        : instructions(instructions), symbol_table(symbol_table)
+    {
+    }
+
+    void generate(std::vector<std::string> *object_code)
+    {
+        for (auto instruction : *instructions)
+        {
+            std::string line;
+            switch (instruction->kind)
+            {
+                case InstructionKind::C_COMMAND:
+                {
+                    std::string dest, comp, jump;
+                    if (instruction->dest.empty())
+                        dest = dest_table.at("null");
+                    else if (dest_table.contains(instruction->dest))
+                        dest = dest_table.at(instruction->dest);
+                    else
+                    {
+                        std::cerr << "Error: '" + instruction->dest + "' is undefined instruction." << std::endl;
+                        continue;
+                    }
+                    if (instruction->comp.empty())
+                    {
+                        std::cerr << "Error: Undefined instruction." << std::endl;
+                        continue;
+                    }
+                    else if (comp_table.contains(instruction->comp))
+                        comp = comp_table.at(instruction->comp);
+                    else
+                    {
+                        std::cerr << "Error: '" + instruction->comp + "' is undefined instruction." << std::endl;
+                        continue;
+                    }
+                    if (instruction->jump.empty())
+                        jump = jump_table.at("null");
+                    else if (jump_table.contains(instruction->jump))
+                        jump = jump_table.at(instruction->jump);
+                    else
+                    {
+                        std::cerr << "Error: '" + instruction->jump + "' is undefined instruction." << std::endl;
+                        continue;
+                    }
+                    line = "111";
+                    line.append(comp);
+                    line.append(dest);
+                    line.append(jump);
+                    break;
+                }
+                case InstructionKind::L_COMMAND:
+                {
+                    continue;
+                }
+                case InstructionKind::A_COMMAND:
+                {
+                    int address;
+                    if (instruction->is_numeric)
+                        address = std::stoi(instruction->symbol);
+                    else
+                        address = symbol_table->at(instruction->symbol);
+                    std::stringstream ss;
+                    ss << std::bitset<15>(address);
+                    line = "0" + ss.str();
+                    break;
+                }
+            }
+            object_code->push_back(line);
+        }
+    }
 };
-
-
-#endif //ASSEMBLER_CODEGENERATOR_H

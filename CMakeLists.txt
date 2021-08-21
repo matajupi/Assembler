@@ -3,4 +3,4 @@ project(Assembler)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Assembler main.cpp Assembler.cpp Assembler.h Instruction.cpp Instruction.h CodeGenerator.cpp CodeGenerator.h Parser.cpp Parser.h AssembleError.cpp AssembleError.h)
+add_executable(Assembler main.cc assembler_all.h Parser.h Instruction.h CodeGenerator.h Assembler.h)

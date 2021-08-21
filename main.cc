@@ -5,7 +5,8 @@
 #include <filesystem>
 #include "Assembler.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     // Display assembler information.
     std::cout << "Hack assembler version 1.0" << std::endl;
     std::cout << "This is part of the nand2tetris project." << std::endl;
@@ -20,53 +21,37 @@ int main(int argc, char **argv) {
     }
     std::filesystem::path file_path = std::string(argv[1]);
 
-    // Read assembly code.
+    // Read assembly obj_code.
     std::ifstream input_file(file_path);
     if (!input_file.is_open())
     {
         std::cerr << "Error: Source file '" << file_path << "' could not open." << std::endl;
-        return 0;
+        return EXIT_FAILURE;
     }
-    std::vector<std::string> source;
-    for (std::string line; getline(input_file, line); )
-        source.push_back(line);
+    auto source = new std::vector<std::string>();
+    for (std::string line; std::getline(input_file, line); )
+    {
+        source->push_back(line);
+    }
     input_file.close();
 
-    // Assemble assembly code.
+    auto object_code = new std::vector<std::string>();
     Assembler assembler(source);
-    std::vector<std::string> code;
-    std::vector<AssembleError> errors;
-    bool is_succeed;
-    try
-    {
-        is_succeed = assembler.assemble(code, errors);
-        if (!is_succeed)
-        {
-            for (auto error : errors)
-                error.dump(std::cerr, file_path);
-        }
-    }
-    catch (std::exception &ex)
-    {
-        std::cerr << "Internal assembler error: " << ex.what() << std::endl;
-        std::cerr << "Please submit an issue to the following site with a full bug report and assembly code." << std::endl;
-        std::cerr << "https://github.com/matajupi/HackAssembler/issues" << std::endl;
-        is_succeed = false;
-    }
-    if (!is_succeed)
-        return 0;
+    assembler.assemble(object_code);
 
-    // Write object code.
+    // Write object obj_code.
     file_path.replace_extension(".hack");
     std::ofstream output_file(file_path);
     if (!output_file.is_open())
     {
         std::cerr << "Error: Object file '" << file_path << "' could not open." << std::endl;
-        return 0;
+        return EXIT_FAILURE;
     }
-    for (const auto& line : code)
+    for (const auto &line : *object_code)
         output_file << line << std::endl;
     output_file.close();
 
-    return 0;
+    delete object_code;
+
+    return EXIT_SUCCESS;
 }

@@ -1,0 +1,16 @@
+<assembly> ::= <line>*
+<line> ::= <a_command> | <c_command> | <l_command>
+<a_command> ::= "@" <alnum>
+<alnum> ::= <symbol> | <numeric>
+<l_command> ::= "(" <symbol> ")"
+<symbol> ::= [a-zA-Z_.$:][a-zA-Z0-9_.$:]*
+<numeric> ::= [0-9]*
+<c_command> ::= (<dest>? "=")? <comp> (";" <jump>?)?
+<dest> ::= "null" | <specified-symbol>*
+<comp> ::= <specified-symbol>? <unary>
+<unary> ::= ("!" | "+" | "-" | "&" | "|")? <specified>
+<jump> ::= "null" | <jump-symbol>
+<jump-symbol> ::= "JGT" | "JEQ" | "JGE" | "JLT" | "JNE" | "JLE" | "JMP"
+<specified> ::= <specified-symbol> | <specified-digit>
+<specified-symbol> ::= "A" | "M" | "D"
+<specified-digit> ::= "0" | "1"
